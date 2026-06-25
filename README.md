@@ -164,7 +164,7 @@ python -m my_experiment.train_finetune \
 </p>
 
 <p align="center">
-  Made with ❤️ at Xiamen University Malaysia
+  Made with ❤️ at Xiamen University
 </p>
 
 # SimSiam-YOLO
