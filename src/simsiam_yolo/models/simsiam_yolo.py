@@ -11,7 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from typing import List, Tuple, Optional, Union, Dict
 
-from my_experiment.yolo_encoder import YOLOv8Backbone
+from simsiam_yolo.models.yolo_encoder import YOLOv8Backbone
 
 
 def build_conv_projector(in_dim: int, out_dim: int = None, hidden_dim: int = None) -> nn.Module:

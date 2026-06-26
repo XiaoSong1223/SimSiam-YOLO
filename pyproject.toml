@@ -1,0 +1,24 @@
+\
+        [build-system]
+        requires = ["setuptools>=68", "wheel"]
+        build-backend = "setuptools.build_meta"
+
+        [project]
+        name = "simsiam-yolo"
+        version = "0.1.0"
+        description = "Feature-level SimSiam pre-training for data-efficient YOLOv8 traffic sign detection."
+        readme = "README.md"
+        requires-python = ">=3.10"
+        authors = [{ name = "Song Zhifei" }]
+        dependencies = [
+            "torch>=2.0",
+            "torchvision>=0.15",
+            "ultralytics>=8.0",
+            "PyYAML>=6.0",
+            "Pillow>=9.0",
+            "matplotlib>=3.7",
+            "tqdm>=4.0",
+        ]
+
+        [tool.setuptools.packages.find]
+        where = ["src"]

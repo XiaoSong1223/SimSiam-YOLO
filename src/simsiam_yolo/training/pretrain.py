@@ -26,7 +26,7 @@ from PIL import Image, ImageFilter
 from torch.utils.data import Dataset
 
 # Import our modules
-from my_experiment.simsiam_yolo import SimSiamYOLO, criterion
+from simsiam_yolo.models.simsiam_yolo import SimSiamYOLO, criterion
 
 
 class TwoCropsTransform:
@@ -84,7 +84,7 @@ class FlatImageDataset(Dataset):
         return img, 0
 
 
-parser = argparse.ArgumentParser(description='Feature-Level SimSiam Training with YOLOv8')
+parser = argparse.ArgumentParser(description='Feature-Level SimSiam Pre-training with YOLOv8')
 parser.add_argument('data', metavar='DIR',
                     help='path to dataset (unlabeled images)')
 parser.add_argument('-j', '--workers', default=8, type=int, metavar='N',

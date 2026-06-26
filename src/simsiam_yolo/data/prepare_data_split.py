@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Prepare 10% data split from TT-100K dataset for limited labeled data scenario.
+Prepare limited-label data splits from the TT-100K dataset for limited labeled data scenario.
 
 This script:
 1. Randomly samples 10%, 30%, 50% of training images and labels
@@ -172,18 +172,18 @@ def create_yaml_config(original_yaml_path, output_yaml_path, output_base_dir,
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Prepare 10% data split from TT-100K dataset'
+        description='Prepare limited-label data splits from the TT-100K dataset'
     )
     parser.add_argument(
         '--train-images',
         type=str,
-        default='../dataset/tt100k_2021/train/images',
+        default='data/tt100k_2021/train/images',
         help='Path to training images directory'
     )
     parser.add_argument(
         '--train-labels',
         type=str,
-        default='../dataset/tt100k_2021/train/labels',
+        default='data/tt100k_2021/train/labels',
         help='Path to training labels directory'
     )
     parser.add_argument(
@@ -195,13 +195,13 @@ def main():
     parser.add_argument(
         '--original-yaml',
         type=str,
-        default='../dataset/tt100k_2021/data.yaml',
+        default='data/tt100k_2021/data.yaml',
         help='Path to original data.yaml file'
     )
     parser.add_argument(
         '--output-dir',
         type=str,
-        default='../dataset/tt100k_10pct',
+        default='data/TT100K_Subsets/train_10percent',
         help='Output directory for 10% dataset'
     )
     parser.add_argument(

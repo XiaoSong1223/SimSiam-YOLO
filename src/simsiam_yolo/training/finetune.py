@@ -9,16 +9,16 @@ This script supports three training modes:
 
 Usage:
     # Mode A: Train with SimSiam pre-trained weights (freeze backbone for first 10 epochs)
-    python -m my_experiment.train_finetune --mode ours --epochs 100 --freeze 10
+    python -m simsiam_yolo.training.finetune --mode ours --epochs 100 --freeze 10
     
     # Mode B: Train with ImageNet pre-trained weights (no freezing)
-    python -m my_experiment.train_finetune --mode baseline --epochs 100
+    python -m simsiam_yolo.training.finetune --mode baseline --epochs 100
     
     # Mode C: Train from scratch (no pre-trained weights, no freezing)
-    python -m my_experiment.train_finetune --mode scratch --epochs 100
+    python -m simsiam_yolo.training.finetune --mode scratch --epochs 100
     
     # Custom data path
-    python -m my_experiment.train_finetune --mode ours --data ../dataset/tt100k_20pct/data_20pct.yaml
+    python -m simsiam_yolo.training.finetune --mode ours --data ../dataset/tt100k_20pct/data_20pct.yaml
 """
 
 import argparse
@@ -26,15 +26,14 @@ import os
 import sys
 from pathlib import Path
 
-# Add ultralytics to path
-_ultralytics_path = Path(__file__).parent.parent / "ultralytics"
-_ultralytics_path = _ultralytics_path.resolve()  # Use absolute path
-if _ultralytics_path.exists():
-    if str(_ultralytics_path) not in sys.path:
-        sys.path.insert(0, str(_ultralytics_path))
+# Add vendored Ultralytics snapshot to path when available
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+_ultralytics_path = (_PROJECT_ROOT / "external" / "ultralytics").resolve()
+if _ultralytics_path.exists() and str(_ultralytics_path) not in sys.path:
+    sys.path.insert(0, str(_ultralytics_path))
 else:
-    print(f"Warning: ultralytics path not found: {_ultralytics_path}")
-    print("  Trying to import from system path...")
+    print(f"Warning: vendored ultralytics path not found: {_ultralytics_path}")
+    print("  Trying to import from the installed ultralytics package...")
 
 try:
     from ultralytics import YOLO
@@ -59,23 +58,25 @@ except ImportError:
     torch = None
 
 
-def get_model_path(mode: str) -> str:
+def get_model_path(mode: str, pretrained_weights: str | None = None) -> str:
     """
     Get model path based on training mode.
     
     Args:
         mode: 'ours', 'baseline', or 'scratch'
+        pretrained_weights: Optional path to converted SimSiam-YOLO weights.
     
     Returns:
         Path to model weights file or config file
     """
     if mode == 'ours':
-        # SimSiam pre-trained weights
-        model_path = Path(__file__).parent / "yolov8_simsiam_100pretrained.pt"
+        # SimSiam pre-trained weights converted by simsiam_yolo.tools.convert_weights
+        model_path = Path(pretrained_weights) if pretrained_weights else _PROJECT_ROOT / "artifacts" / "weights" / "yolov8_simsiam_pretrained.pt"
         if not model_path.exists():
             raise FileNotFoundError(
                 f"SimSiam weights not found at {model_path}. "
-                "Please run convert_weights.py first."
+                "Please run python -m simsiam_yolo.tools.convert_weights first, "
+                "or pass --pretrained-weights explicitly."
             )
         return str(model_path.absolute())
     
@@ -137,19 +138,19 @@ def main():
         epilog="""
 Examples:
   # Mode A: Train with SimSiam weights (freeze backbone for 10 epochs)
-  python -m my_experiment.train_finetune --mode ours --epochs 100 --freeze 10
+  python -m simsiam_yolo.training.finetune --mode ours --epochs 100 --freeze 10
   
   # Mode B: Train with ImageNet weights (no freezing)
-  python -m my_experiment.train_finetune --mode baseline --epochs 100
+  python -m simsiam_yolo.training.finetune --mode baseline --epochs 100
   
   # Mode C: Train from scratch (no pre-trained weights)
-  python -m my_experiment.train_finetune --mode scratch --epochs 100
+  python -m simsiam_yolo.training.finetune --mode scratch --epochs 100
   
   # Use 20% dataset
-  python -m my_experiment.train_finetune --mode ours --data ../dataset/tt100k_20pct/data_20pct.yaml --freeze 10
+  python -m simsiam_yolo.training.finetune --mode ours --data ../dataset/tt100k_20pct/data_20pct.yaml --freeze 10
   
   # Custom batch size and image size
-  python -m my_experiment.train_finetune --mode ours --batch 8 --imgsz 512 --freeze 10
+  python -m simsiam_yolo.training.finetune --mode ours --batch 8 --imgsz 512 --freeze 10
         """
     )
     
@@ -166,8 +167,15 @@ Examples:
     parser.add_argument(
         '--data',
         type=str,
-        default='/Users/xiaosongxiaosong/Course/ThesisII/dataset/TT100K_Subsets/train_10percent/TT100K_10percent.yaml',
-        help='Path to dataset YAML file (default: /Users/xiaosongxiaosong/Course/ThesisII/dataset/TT100K_Subsets/train_10percent/TT100K_10percent.yaml)'
+        default='data/TT100K_Subsets/train_10percent/TT100K_10percent.yaml',
+        help='Path to dataset YAML file (default: data/TT100K_Subsets/train_10percent/TT100K_10percent.yaml)'
+    )
+    
+    parser.add_argument(
+        '--pretrained-weights',
+        type=str,
+        default=None,
+        help='Path to converted SimSiam-YOLO weights for --mode ours (default: artifacts/weights/yolov8_simsiam_pretrained.pt)'
     )
     
     # Training hyperparameters
@@ -320,7 +328,7 @@ Examples:
     
     # Get model path
     try:
-        model_path = get_model_path(args.mode)
+        model_path = get_model_path(args.mode, args.pretrained_weights)
         print(f"Loading model from: {model_path}")
     except FileNotFoundError as e:
         print(f"Error: {e}")

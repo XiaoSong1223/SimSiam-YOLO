@@ -1,0 +1,36 @@
+\
+        # macOS / editor noise
+        .DS_Store
+        .vscode/
+        .idea/
+
+        # Python cache/build artifacts
+        __pycache__/
+        *.py[cod]
+        *.egg-info/
+        .pytest_cache/
+        .mypy_cache/
+        .ruff_cache/
+        build/
+        dist/
+
+        # Environments
+        .venv/
+        venv/
+        env/
+        .env
+
+        # Local datasets and experiment outputs
+        data/
+        datasets/
+        checkpoints/
+        runs/
+        artifacts/weights/
+        *.pt
+        *.pth
+        *.pth.tar
+
+        # Notebook/runtime noise
+        .ipynb_checkpoints/
+        wandb/
+        tensorboard/

@@ -12,9 +12,12 @@ from pathlib import Path
 from copy import deepcopy
 from datetime import datetime
 
-# Import ultralytics
+# Import vendored Ultralytics snapshot when available
 import sys
-sys.path.insert(0, str(Path(__file__).parent.parent / "ultralytics"))
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+_ULTRALYTICS_PATH = _PROJECT_ROOT / "external" / "ultralytics"
+if _ULTRALYTICS_PATH.exists() and str(_ULTRALYTICS_PATH) not in sys.path:
+    sys.path.insert(0, str(_ULTRALYTICS_PATH))
 
 try:
     from ultralytics import YOLO
@@ -157,7 +160,7 @@ def main():
     parser.add_argument(
         '--output',
         type=str,
-        default='yolov8_simsiam_pretrained.pt',
+        default='artifacts/weights/yolov8_simsiam_pretrained.pt',
         help='Output filename (default: yolov8_simsiam_pretrained.pt)'
     )
     parser.add_argument(

@@ -13,10 +13,11 @@ import sys
 from pathlib import Path
 from typing import List, Optional, Union
 
-# Add ultralytics to path
-_ultralytics_path = Path(__file__).parent.parent / "ultralytics"
-if _ultralytics_path.exists():
-    sys.path.insert(0, str(_ultralytics_path))
+# Add vendored Ultralytics snapshot to path when available
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+_ULTRALYTICS_PATH = _PROJECT_ROOT / "external" / "ultralytics"
+if _ULTRALYTICS_PATH.exists() and str(_ULTRALYTICS_PATH) not in sys.path:
+    sys.path.insert(0, str(_ULTRALYTICS_PATH))
 
 try:
     from ultralytics.nn.tasks import (
@@ -82,7 +83,7 @@ class YOLOv8Backbone(nn.Module):
             # Handle yolov8n.yaml format
             if "yolov8" in cfg.lower() and not cfg.startswith("/"):
                 # Try to find in ultralytics cfg directory
-                cfg_path = Path(__file__).parent.parent / "ultralytics" / "ultralytics" / "cfg" / "models" / "v8" / cfg
+                cfg_path = _ULTRALYTICS_PATH / "ultralytics" / "cfg" / "models" / "v8" / cfg
                 if not cfg_path.exists():
                     # Try without .yaml extension
                     cfg_path = cfg_path.with_suffix(".yaml")
