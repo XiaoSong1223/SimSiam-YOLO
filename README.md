@@ -1,4 +1,4 @@
-# SimSiam-YOLOv8: Self-Supervised Traffic Sign Detection
+# SimSiam-YOLOv8: Data-Efficient Traffic Sign Detection with Limited Labels
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0+-red.svg)](https://pytorch.org/)
