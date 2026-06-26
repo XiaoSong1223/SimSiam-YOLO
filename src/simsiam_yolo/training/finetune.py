@@ -18,7 +18,7 @@ Usage:
     python -m simsiam_yolo.training.finetune --mode scratch --epochs 100
     
     # Custom data path
-    python -m simsiam_yolo.training.finetune --mode ours --data ../dataset/tt100k_20pct/data_20pct.yaml
+    python -m simsiam_yolo.training.finetune --mode ours --data data/TT100K_Subsets/train_20percent/TT100K_20percent.yaml
 """
 
 import argparse
@@ -147,7 +147,7 @@ Examples:
   python -m simsiam_yolo.training.finetune --mode scratch --epochs 100
   
   # Use 20% dataset
-  python -m simsiam_yolo.training.finetune --mode ours --data ../dataset/tt100k_20pct/data_20pct.yaml --freeze 10
+  python -m simsiam_yolo.training.finetune --mode ours --data data/TT100K_Subsets/train_20percent/TT100K_20percent.yaml --freeze 10
   
   # Custom batch size and image size
   python -m simsiam_yolo.training.finetune --mode ours --batch 8 --imgsz 512 --freeze 10
